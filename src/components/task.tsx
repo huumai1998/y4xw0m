@@ -4,17 +4,37 @@ import React, { useState } from "react";
 import { BiSolidEdit } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import Modal from "./modal";
+import { useRouter } from "next/navigation";
+import { deleteTodo, editTodo } from "@/api";
 
 interface TaskProps {
   task: ITask;
 }
 
 const Task: React.FC<TaskProps> = ({ task }) => {
+  const router = useRouter();
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalDeleted, setOpenModalDeleted] = useState(false);
   const [editTask, setEditTask] = useState(task.text);
 
-  const handleSubmitEditTodo = () => {};
+  const handleSubmitEditTodo: React.FormEventHandler<HTMLFormElement> = async (
+    e
+  ) => {
+    e.preventDefault();
+    await editTodo({
+      id: task.id,
+      text: editTask,
+    });
+    setEditTask("");
+    setOpenModalEdit(false);
+    router.refresh();
+  };
+
+  const handleDeleteTask = async (id: string) => {
+    await deleteTodo(id);
+    setOpenModalDeleted(false);
+    router.refresh();
+  };
   return (
     <>
       <tr key={task.id}>
@@ -28,7 +48,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
           />
           <Modal modalOpen={openModalEdit} setOpen={setOpenModalEdit}>
             <form onSubmit={handleSubmitEditTodo}>
-              <h3 className="font-bold text-lg">Add New Task</h3>
+              <h3 className="font-bold text-lg">Edit Task</h3>
               <div className="modal-action">
                 <input
                   value={editTask}
@@ -43,7 +63,23 @@ const Task: React.FC<TaskProps> = ({ task }) => {
               </div>
             </form>
           </Modal>
-          <FaRegTrashAlt cursor="pointer" className="text-red-500" size={20} />
+          <FaRegTrashAlt
+            onClick={() => setOpenModalDeleted(true)}
+            cursor="pointer"
+            className="text-red-500"
+            size={20}
+          />
+          <Modal modalOpen={openModalDeleted} setOpen={setOpenModalDeleted}>
+            <h3>Are you sure, You want to delete this task? </h3>
+            <div className="modal-action">
+              <button
+                onClick={() => handleDeleteTask(task.id)}
+                className="btn bg-red-500"
+              >
+                Yes
+              </button>
+            </div>
+          </Modal>
         </td>
       </tr>
     </>
