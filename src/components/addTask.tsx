@@ -12,7 +12,9 @@ const AddTask = () => {
         Add New Task <FaPlus className="ml-2" size={20} />
       </button>
 
-      <Modal modalOpen={open} setOpen={setOpen} />
+      <Modal modalOpen={open} setOpen={setOpen}>
+        <div>Open todo modal</div>
+      </Modal>
     </div>
   );
 };

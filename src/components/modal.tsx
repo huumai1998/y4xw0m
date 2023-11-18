@@ -3,9 +3,10 @@ import React from "react";
 interface ModalProps {
   modalOpen: boolean;
   setOpen: (open: boolean) => boolean | void;
+  children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ modalOpen, setOpen }) => {
+const Modal: React.FC<ModalProps> = ({ modalOpen, setOpen, children }) => {
   return (
     <div className={`modal ${modalOpen ? "modal-open" : ""}`}>
       <div className="modal-box">
@@ -18,8 +19,7 @@ const Modal: React.FC<ModalProps> = ({ modalOpen, setOpen }) => {
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg">Hello!</h3>
-        <p className="py-4">Press ESC key or click on ✕ button to close</p>
+        {children}
       </div>
     </div>
   );
